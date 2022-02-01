@@ -45,29 +45,44 @@ class NaturalScales(Notes):
         return f"Escala {self.type} de {self.tone}"
 
 
-def train(type, theory='Escala Natural', cycles=100, question_time=60, answer_time=5):
+def input_request():
+    input("\t\tPress Enter to continue...")
+
+
+def check_original_index(original_list, sorted_list, ind):
+    return original_list.index(sorted_list[ind])
+
+
+def train(type, theory='Escala Natural', difficulty='Hard', cycles=100, question_time=60, answer_time=5):
     print("Vamos começar a treinar teoria musical!\n")
     cycle_aux = 0
+    degrees = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII']
     while cycle_aux < 7 * cycles:
         inner_cycle = cycle_aux % 7
         if inner_cycle == 0:
             print(f'\tInício do Round {int(1 + cycle_aux/7)}')
             notes_sampled = random.sample(string.ascii_letters[0:7].upper(), k=7)
+            degrees_sampled = random.sample(degrees, k=7)
 
-        print(f'\t\t{theory} {type} de {notes_sampled[inner_cycle]}')
+        start_string = f"Grau {degrees_sampled[inner_cycle]} " if difficulty != "Easy" else ""
+
+        print(f'\t\t{start_string}{theory} {type} de {notes_sampled[inner_cycle]}')
         scale = NaturalScales(notes_sampled[inner_cycle], type)
 
         time.sleep(question_time)
-        print(f'\t\t{" - ".join(scale.scale.keys())}')
-
+        # input_request()
+        if difficulty == 'Easy':
+            print(f'\t\t{" - ".join(scale.scale.keys())}')
+        else:
+            print(f'\t\t{list(scale.scale.keys())[check_original_index(degrees, degrees_sampled, inner_cycle)]}')
         time.sleep(answer_time)
+        # input_request()
         cycle_aux += 1
 
     return None
 
 
-
 if __name__ == '__main__':
     a = NaturalScales('D', 'Menor')
 
-    train(type='Maior', question_time=5, answer_time=1)
+    train(type='Maior', question_time=5, answer_time=2)
